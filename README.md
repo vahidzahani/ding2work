@@ -1,1 +1,1 @@
-"# ding2work" 
+This is a simple program uusde by javascript. For a student, you might like to use it. In this program, I simply used Bootstrap and PHP, and if I want to use it more, I will definitely upgrade it, maybe one day it will become a strong program. became
