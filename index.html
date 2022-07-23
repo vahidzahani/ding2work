@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <link rel="icon" href="https://www.shareicon.net/data/16x16/2016/11/09/851860_time_512x512.png" type = "image/x-icon">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>ding2work</title>
+</head>
+
+   
+<body>
+
+    <center>
+        <input type="text" style="margin:5px ;" name="txtbox" id="txtbox" value=""><br>
+        <button class="btn btn-warning btn-lg" style="min-width: 200px;margin: 10px;" id="btnstart">START</button>
+        <br>
+        <button class="btn btn-warning btn-lg" style="min-width: 200px;margin: 10px;" id="btnend" disabled>END</button>
+        <br><strong>secend: </strong><span id="block_txt" style="color:red ;font-size:20px ;">0</span>
+        
+    </center>
+    
+
+</body>
+</html>
+
+<script>
+    var lastid=0;
+    var counter=0;
+    var intervalId = null;
+    var max_timer=15*60//15 minute
+    var myAudio = new Audio('Ring-Generic3.mp3');
+    $("#btnstart").on( "click", function( event ) {
+        $(this).prop("disabled",true);
+        $("#btnend").prop("disabled",false);
+        txt=document.getElementById("txtbox").value;
+        fn_save_start(txt);
+
+    });
+    $("#btnend").on( "click", function( event ) {
+        $(this).prop("disabled",true);
+        $("#btnstart").prop("disabled",false);
+        fn_save_end(lastid);
+    });
+    function fn_save_start(txt) {
+        counter=0;
+        intervalId=setInterval(function(){
+            if (counter>=max_timer) {
+                myAudio.play();
+                $("#btnend").click();
+            }else{
+                counter++;
+                $("#block_txt").text(counter + " from " + max_timer);
+            }
+        },1000);
+        $.ajax({
+        url: "kernel.php?save="+txt,
+        cache: false
+        })
+        .done(function( msg ) {/*get lastinserted id*/
+            lastid=msg;
+            //alert( msg );
+        });
+    }
+    function fn_save_end(id) {
+        clearInterval(intervalId);
+        $.ajax({
+        url: "kernel.php?update="+id,
+        cache: false
+        })
+        .done(function( msg ) {
+            //alert( msg );
+        });
+    }
+</script>
+
